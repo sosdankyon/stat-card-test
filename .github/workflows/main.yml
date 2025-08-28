@@ -1,0 +1,55 @@
+# 워크플로우의 이름
+name: Run Python Script and Commit Changes
+
+# 이 워크플로우가 실행될 조건
+on:
+  # 1시간 마다 자동으로 실행 (UTC 기준)
+  schedule:
+    - cron: '0 * * * *'
+  # 수동으로도 실행할 수 있도록 버튼 추가
+  workflow_dispatch:
+
+# 실행될 작업들
+jobs:
+  build:
+    # 작업이 실행될 환경
+    runs-on: ubuntu-latest
+
+    # 작업의 단계들
+    steps:
+      # 1. 저장소의 코드를 가상 환경으로 가져오기
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 파이썬 환경 설정
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' # 원하는 파이썬 버전을 사용하세요
+
+      # 3. 파이썬 스크립트 실행
+      - name: Run Python script
+        run: python update-stats.py # 실제 파이썬 파일 이름으로 변경하세요
+
+      # 4. 변경된 파일을 커밋하고 푸시하기
+      - name: Commit and push if it changed
+        run: |
+          # Git 사용자 정보 설정 (봇 이름으로 커밋)
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          
+          # 변경된 파일이 있는지 확인
+          git add result.svg
+          
+          # 변경 사항이 있을 때만 커밋을 진행
+          # git status --porcelain이 비어있지 않으면 변경된 파일이 있다는 의미
+          if ! git status --porcelain | grep -q "result.svg"; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          
+          # 커밋 메시지를 작성하고 커밋
+          git commit -m "update"
+          
+          # 원격 저장소에 푸시
+          git push
