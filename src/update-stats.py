@@ -26,7 +26,7 @@ class StatUpdater:
         if self.USER_NAME is None:
             raise Exception("USER_NAME not set")
         if self.FONT is None:
-            self.FONT = "assets/DungGeunMo_ascii.woff2"
+            self.FONT = "../assets/DungGeunMo_ascii.woff2"
             logger.info(f"use default font: {self.FONT}")
 
         logger.remove()
