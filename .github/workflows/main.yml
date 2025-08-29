@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     # 작업이 실행될 환경
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     # 작업의 단계들
