@@ -16,11 +16,11 @@ def log_formatter(record):
 
 class StatUpdater:
     def __init__(self):
-        self.TOKEN: Final[Optional[str]] = os.getenv("API_TOKEN", default=None)
+        self.TOKEN: Final[Optional[str]] = os.getenv("TOKEN", default=None)
         self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
 
         if self.TOKEN is None:
-            raise Exception("API_TOKEN not set")
+            raise Exception("TOKEN not set")
         if self.USER_NAME is None:
             raise Exception("USER_NAME not set")
 
