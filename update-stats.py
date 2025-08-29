@@ -98,10 +98,6 @@ class StatUpdater:
         with open("result.svg", "w", encoding="utf-8") as f:
             f.write(card)
 
-        with open("README.md", "w", encoding="utf-8") as f:
-            timestamp = datetime.now().timestamp()
-            f.write(f"![](result.svg?tmp={timestamp})")
-
     def request_api(self, endpoint: str, get_all_pages: bool = False) -> list | dict:
         headers = {"Authorization": f"token {self.TOKEN}"}
 
