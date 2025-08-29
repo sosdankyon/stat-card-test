@@ -28,7 +28,7 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
           USER_NAME: ${{ vars.USER_NAME }}
           FONT: ${{ vars.FONT }}
-        run: python update-stats.py
+        run: python update-card.py
 
       - name: Commit and push
         run: |
