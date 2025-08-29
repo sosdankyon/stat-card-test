@@ -2,7 +2,6 @@ from typing import Final, Optional
 
 import requests
 from datetime import datetime
-from dotenv import load_dotenv
 import os
 import sys
 from loguru import logger
@@ -17,7 +16,6 @@ def log_formatter(record):
 
 class StatUpdater:
     def __init__(self):
-        load_dotenv()
         self.TOKEN: Final[Optional[str]] = os.getenv("GITHUB_TOKEN", default=None)
         self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
 

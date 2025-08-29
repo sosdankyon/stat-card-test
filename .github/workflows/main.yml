@@ -35,6 +35,11 @@ jobs:
 
       # 3. 파이썬 스크립트 실행
       - name: Run Python script
+        env:
+          # GITHUB_TOKEN이라는 환경 변수에 GitHub Secret인 GH_TOKEN 값을 할당
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          # USER_NAME이라는 환경 변수에 GitHub Secret인 USER_NAME 값을 할당
+          USER_NAME: ${{ secrets.USER_NAME }}
         run: python update-stats.py # 실제 파이썬 파일 이름으로 변경하세요
 
       # 4. 변경된 파일을 커밋하고 푸시하기
