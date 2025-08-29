@@ -28,12 +28,12 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
           USER_NAME: ${{ vars.USER_NAME }}
           FONT: ${{ vars.FONT }}
-        run: python src/update-stats.py
+        run: python update-stats.py
 
       - name: Commit and push
         run: |
           git clone https://${{ secrets.TOKEN }}@github.com/${{ vars.USER_NAME }}/${{ vars.USER_NAME }}.git tmp
-          cp my-github-stats.svg ./tmp/my-github-stats.svg
+          cp my-github-stats.svg tmp/my-github-stats.svg
           cd tmp
           
           git config user.name "GitHub Actions Bot"

@@ -26,7 +26,7 @@ class StatUpdater:
         if self.USER_NAME is None:
             raise Exception("USER_NAME not set")
         if self.FONT is None:
-            self.FONT = "../assets/DungGeunMo_ascii.woff2"
+            self.FONT = "assets/DungGeunMo_ascii.woff2"
             logger.info(f"use default font: {self.FONT}")
 
         logger.remove()
@@ -118,7 +118,7 @@ class StatUpdater:
                 .replace("{USER_NAME}", self.USER_NAME)
                 .replace("{B64_FONT}", b64_font))
 
-        with open("../my-github-stats.svg", "w", encoding="utf-8") as f:
+        with open("my-github-stats.svg", "w", encoding="utf-8") as f:
             f.write(card)
 
     def request_api(self, endpoint: str, get_all_pages: bool = False) -> list | dict:
