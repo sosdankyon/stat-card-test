@@ -17,10 +17,12 @@ def log_formatter(record):
 class StatUpdater:
     def __init__(self):
         self.TOKEN: Final[Optional[str]] = os.getenv("TOKEN", default=None)
-        self.USER_NAME: Optional[str] = None
+        self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
 
         if self.TOKEN is None:
             raise Exception("TOKEN not set")
+        if self.USER_NAME is None:
+            raise Exception("USER_NAME not set")
 
         logger.remove()
         logger.add(sys.stdout, colorize=True, format=log_formatter, level="DEBUG")
@@ -30,11 +32,6 @@ class StatUpdater:
         self.make_card(stats)
 
     def fetch(self):
-        logger.info("Get user name...")
-        response = self.request_api(("/user"))
-        self.USER_NAME = response["login"]
-        logger.info(f"Your name is {self.USER_NAME}")
-
         logger.info(f"Get repository list...")
         repos = self.request_api("/user/repos?affiliation=owner", get_all_pages=True)
         total_repo_count = len(repos)
