@@ -2,7 +2,7 @@ name: Update Card
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # every 00:00
+    - cron: "* * * * *"  # every 00:00
   workflow_dispatch:
 
 jobs:
@@ -33,13 +33,13 @@ jobs:
       - name: Commit and push
         run: |
           git clone https://${{ secrets.TOKEN }}@github.com/${{ secrets.USER_NAME }}/${{ secrets.USER_NAME }}.git tmp
-          cp ./result.svg ./tmp/result.svg
+          cp ./my-github-stats.svg ./tmp/my-github-stats.svg
           cd tmp
           
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           
-          git add result.svg
+          git add my-github-stats.svg
 
           if git diff --staged --quiet; then
             echo "No changes to commit."
