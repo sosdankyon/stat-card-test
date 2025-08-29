@@ -2,7 +2,7 @@ name: Update Card
 
 on:
   schedule:
-    - cron: "0 * * * *"  # every one hour
+    - cron: "0 0 * * *"  # every 00:00
   workflow_dispatch:
 
 jobs:
@@ -45,5 +45,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update result.svg from automated workflow"
+          git commit -m "Update stat card"
           git push

@@ -1,3 +1,4 @@
+import base64
 from typing import Final, Optional
 
 import requests
@@ -18,18 +19,22 @@ class StatUpdater:
     def __init__(self):
         self.TOKEN: Final[Optional[str]] = os.getenv("TOKEN", default=None)
         self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
+        self.FONT: Optional[str] = os.getenv("FONT", default=None)
 
         if self.TOKEN is None:
             raise Exception("TOKEN not set")
         if self.USER_NAME is None:
             raise Exception("USER_NAME not set")
+        if self.FONT is None:
+            raise Exception("FONT not set")
 
         logger.remove()
         logger.add(sys.stdout, colorize=True, format=log_formatter, level="DEBUG")
 
     def update(self):
         stats = self.fetch()
-        self.make_card(stats)
+        b64_font = self.get_font()
+        self.make_card(stats, b64_font)
 
     def fetch(self):
         logger.info(f"Get repository list...")
@@ -81,7 +86,21 @@ class StatUpdater:
             "now": now.strftime("%Y-%m-%d %H:%M"),
         }
 
-    def make_card(self, stats: dict):
+    def get_font(self) -> str:
+        if self.FONT.startswith("https://"):
+            logger.info(f"Get font from url {self.FONT}")
+            response = requests.get(self.FONT)
+            response.raise_for_status()
+            logger.info(f"font size: {len(response.content)}")
+            return base64.b64encode(response.content).decode("utf-8")
+        else:
+            logger.info(f"Get font from path {self.FONT}")
+            with open(self.FONT, "rb") as f:
+                data = f.read()
+                logger.info(f"font size: {len(data)}")
+                return base64.b64encode(data).decode("utf-8")
+
+    def make_card(self, stats: dict, b64_font: str):
         card = ""
         with open("template.svg", "r", encoding="utf-8") as f:
             card = f.read()
@@ -95,7 +114,8 @@ class StatUpdater:
                 .replace("{PR}", str(stats["pr"]))
                 .replace("{ISSUE}", str(stats["issue"]))
                 .replace("{UPDATE_DATE}", stats["now"])
-                .replace("{USER_NAME}", self.USER_NAME))
+                .replace("{USER_NAME}", self.USER_NAME)
+                .replace("{B64_FONT}", b64_font))
 
         with open("result.svg", "w", encoding="utf-8") as f:
             f.write(card)
