@@ -2,7 +2,7 @@ name: Update Card
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # every 00:00
+    - cron: "0 0 * * *"  # every 00:00
   workflow_dispatch:
 
 jobs:
