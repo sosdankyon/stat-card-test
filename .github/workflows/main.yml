@@ -27,6 +27,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
           USER_NAME: ${{ secrets.USER_NAME }}
+          FONT: ${{ secrets.FONT }}
         run: python update-stats.py
 
       - name: Commit and push
