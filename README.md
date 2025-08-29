@@ -1,1 +1,1 @@
-![](result.svg?tmp=123)
+![](result.svg)
