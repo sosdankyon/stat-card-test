@@ -35,7 +35,7 @@
   </text>
 
   <text x="530" y="45" font-size="14" text-anchor="end">
-    <tspan fill="gray">{UPDATE_DATE}</tspan>
+    <tspan fill="gray">{UPDATE_DATE} UTC</tspan>
   </text>
 
   <line x1="5" y1="50" x2="530" y2="50" stroke="gray" stroke-width="1"/>

@@ -16,11 +16,13 @@ def log_formatter(record):
 
 class StatUpdater:
     def __init__(self):
-        self.TOKEN: Final[Optional[str]] = os.getenv("GITHUB_TOKEN", default=None)
+        self.TOKEN: Final[Optional[str]] = os.getenv("API_TOKEN", default=None)
         self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
 
         if self.TOKEN is None:
-            raise Exception("GITHUB_TOKEN not set")
+            raise Exception("API_TOKEN not set")
+        if self.USER_NAME is None:
+            raise Exception("USER_NAME not set")
 
         logger.remove()
         logger.add(sys.stdout, colorize=True, format=log_formatter, level="DEBUG")
