@@ -1,12 +1,9 @@
-# 워크플로우의 이름
 name: Run Python Script and Commit Changes
 
-# 이 워크플로우가 실행될 조건
 on:
   # 1시간 마다 자동으로 실행 (UTC 기준)
   schedule:
     - cron: '0 * * * *'
-  # 수동으로도 실행할 수 있도록 버튼 추가
   workflow_dispatch:
 
 # 실행될 작업들
