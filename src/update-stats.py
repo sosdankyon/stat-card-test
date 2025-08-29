@@ -103,7 +103,7 @@ class StatUpdater:
 
     def make_card(self, stats: dict, b64_font: str):
         card = ""
-        with open("../assets/template.svg", "r", encoding="utf-8") as f:
+        with open("assets/template.svg", "r", encoding="utf-8") as f:
             card = f.read()
 
         card = (card.replace("{REPO_PUB}", str(stats["repo_pub"]))
