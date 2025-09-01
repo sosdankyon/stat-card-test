@@ -1,4 +1,6 @@
 import base64
+import json
+import tomllib
 from typing import Final, Optional
 
 import requests
@@ -17,6 +19,10 @@ def log_formatter(record):
 
 class StatUpdater:
     def __init__(self):
+        with open("config.toml", "rb") as f:
+            self.CONFIG = tomllib.load(f)
+        print(json.dumps(self.CONFIG, indent=4))
+
         self.TOKEN: Final[Optional[str]] = os.getenv("TOKEN", default=None)
         self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
         self.FONT: Optional[str] = os.getenv("FONT", default=None)

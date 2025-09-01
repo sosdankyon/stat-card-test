@@ -1,0 +1,36 @@
+# 레포지토리 관련 설정
+[repos]
+show_repo = true  # 레포지토리 개수를 표시할지. false이면 아래 설정은 모두 무시됨
+include_public_repos = true  # 공개 레포지토리의 개수를 카운트에 포함할지
+include_private_repos = true  # 비공개 레포지토리의 개수를 카운트에 포함할지
+include_collaborator_repo = false  # 협업자로 포함된 비공개 레포지토리나 접근 가능한 조직의 레포지토리의 개수를 포함할지
+# 카드에 표시할 형식을 설정
+# - "each": 1 public, 2 private, 3 collabo repositories
+#    - count_collaborator_repo가 false 인 경우: 1 public, 2 private repositories
+# - "total": Total 6 repositories
+show_mode = "each"
+
+[star]
+show_star = true  # 얻은 별 개수의 총 합을 표시할지
+
+[fork]
+show_fork = true  # 포크된 개수의 총 합을 표시할지
+
+[commit]
+show_commit = true  # 커밋 개수를 표시할지
+include_private_commit = true  # 비공개 레포지토리의 커밋 개수를 포함할지
+show_commit_this_year = true  # 올해 커밋 개수를 같이 표시할지
+
+[pr]
+show_pr = true  # pr 개수의 개수를 표시할지
+# 카드에 표시할 형식을 설정
+# - "each": 1 open, 2 closed(unmerged), 3 merged
+# - "total": Total 6 PRs
+show_mode = "each"
+
+[issue]
+show_issue = true  # 작성한 이슈의 개수를 표시할지
+
+[date]
+show_update_date = true  # 카드 정보 갱신 날짜를 표시할지
+date_format = "%Y-%m-%d %H:%M"  # %Y: year, %m: month, %d: day, %H: hour, %M: minute. 시간은 항상 UTC 기준
