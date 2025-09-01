@@ -1,14 +1,14 @@
 <svg width="540" height="215" xmlns="http://www.w3.org/2000/svg">
   <style>
     @font-face {
-        font-family: 'RoundedFixedsys';
+        font-family: 'Font';
         src: url(data:font/woff2;charset=utf-8;base64,{B64_FONT}) format('woff2');
         font-weight: normal;
         font-display: block;
     }
 
     text {
-      font-family: "RoundedFixedsys";
+      font-family: "Font";
       fill: white;
       user-select: none;
     }
@@ -92,5 +92,5 @@
       <tspan>{ISSUE}</tspan>
       <tspan class="color-gray">Issues</tspan>
     </text>
-  </svg>
   </g>
+</svg>
