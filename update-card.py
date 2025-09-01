@@ -2,6 +2,7 @@ import base64
 import json
 import tomllib
 from typing import Final, Optional
+from lxml import etree
 
 import requests
 from datetime import datetime
@@ -19,6 +20,9 @@ def log_formatter(record):
 
 class StatUpdater:
     def __init__(self):
+        logger.remove()
+        logger.add(sys.stdout, colorize=True, format=log_formatter, level="DEBUG")
+
         with open("config.toml", "rb") as f:
             self.CONFIG = tomllib.load(f)
         print(json.dumps(self.CONFIG, indent=4))
@@ -35,9 +39,6 @@ class StatUpdater:
             self.FONT = "assets/DungGeunMo_ascii.woff2"
             logger.info(f"use default font: {self.FONT}")
 
-        logger.remove()
-        logger.add(sys.stdout, colorize=True, format=log_formatter, level="DEBUG")
-
     def update(self):
         stats = self.fetch()
         b64_font = self.get_font()
@@ -46,7 +47,8 @@ class StatUpdater:
     def fetch(self):
         logger.info(f"Get repository list...")
         repos = self.request_api("/user/repos?affiliation=owner", get_all_pages=True)
-        total_repo_count = len(repos)
+        collabo_repos = self.request_api("/user/repos?affiliation=collaborator", get_all_pages=True)
+        total_repo_count = len(repos) + len(collabo_repos)
         logger.info(f"Get {total_repo_count} repositories")
 
         total_star = 0
@@ -80,8 +82,10 @@ class StatUpdater:
         logger.info(f"You made {issue_count} issues, {pr_count} PRs")
 
         return {
+            "repo_total": public_repo_count + private_repo_count + len(collabo_repos),
             "repo_pub": public_repo_count,
             "repo_pri": private_repo_count,
+            "repo_col": len(collabo_repos),
             "star": total_star,
             "fork": total_fork,
             "followers": total_followers,
@@ -112,20 +116,57 @@ class StatUpdater:
         with open("assets/template.svg", "r", encoding="utf-8") as f:
             card = f.read()
 
-        card = (card.replace("{REPO_PUB}", str(stats["repo_pub"]))
-                .replace("{REPO_PRI}", str(stats["repo_pri"]))
-                .replace("{STAR}", str(stats["star"]))
-                .replace("{FORK}", str(stats["fork"]))
-                .replace("{COMMIT_TOTAL}", str(stats["commits"]))
-                .replace("{COMMIT_THIS_YEAR}", str(stats["commits_this_year"]))
-                .replace("{PR}", str(stats["pr"]))
-                .replace("{ISSUE}", str(stats["issue"]))
-                .replace("{UPDATE_DATE}", stats["now"])
-                .replace("{USER_NAME}", self.USER_NAME)
-                .replace("{B64_FONT}", b64_font))
+        root = etree.fromstring(card)
+        ns = {"svg": "http://www.w3.org/2000/svg"}
+        root.xpath(".//*[@id='user-name']", namespaces=ns)[0].text = self.USER_NAME
+        root.xpath(".//*[@id='update-date']", namespaces=ns)[0].text = stats["now"] + " UTC"
+
+        root.xpath(".//*[@id='style-font-face']", namespaces=ns)[0].text = f"""
+@font-face {{
+  font-family: 'Font';
+  src: url(data:font/woff2;charset=utf-8;base64,{b64_font}) format('woff2');
+  font-weight: normal;
+  font-display: block;
+}}"""
+
+        root.xpath(".//*[@id='repo-pub']", namespaces=ns)[0].text = str(stats["repo_pub"])
+        root.xpath(".//*[@id='text-repo-pub']", namespaces=ns)[0].text = "public,"
+        root.xpath(".//*[@id='repo-pri']", namespaces=ns)[0].text = str(stats["repo_pri"])
+        root.xpath(".//*[@id='text-repo-pri']", namespaces=ns)[0].text = "private"
+        if stats["repo_col"] > 1:
+            root.xpath(".//*[@id='text-repo-pri']", namespaces=ns)[0].text += ","
+            root.xpath(".//*[@id='repo-col']", namespaces=ns)[0].text = str(stats["repo_col"])
+            root.xpath(".//*[@id='text-repo-col']", namespaces=ns)[0].text = "collabo"
+            root.xpath(".//*[@id='text-repository']", namespaces=ns)[0].text = "repositories" if stats["repo_total"] > 1 else "repository"
+
+        root.xpath(".//*[@id='commit']", namespaces=ns)[0].text = str(stats["commits"])
+        root.xpath(".//*[@id='text-commit-0']", namespaces=ns)[0].text = " total commits"
+        if 1:  # TODO 추후 콘피그 show_commit_this_year 조건 판별 추가
+            root.xpath(".//*[@id='text-commit-0']", namespaces=ns)[0].text += "("
+            root.xpath(".//*[@id='commit-year']", namespaces=ns)[0].text = str(stats["commits_this_year"])
+            root.xpath(".//*[@id='text-commit-1']", namespaces=ns)[0].text = " this year)"
+        else:
+            root.xpath(".//*[@id='commit-year']", namespaces=ns)[0].text = ""
+            root.xpath(".//*[@id='text-commit-1']", namespaces=ns)[0].text = ""
+
+        root.xpath(".//*[@id='text-star-0']", namespaces=ns)[0].text = "Earned"
+        root.xpath(".//*[@id='star']", namespaces=ns)[0].text = str(stats["star"])
+        root.xpath(".//*[@id='text-star-1']", namespaces=ns)[0].text = "stars"
+
+        root.xpath(".//*[@id='text-fork-0']", namespaces=ns)[0].text = "Forked"
+        root.xpath(".//*[@id='fork']", namespaces=ns)[0].text = str(stats["fork"])
+        root.xpath(".//*[@id='text-fork-1']", namespaces=ns)[0].text = "times"
+
+        root.xpath(".//*[@id='text-pr-0']", namespaces=ns)[0].text = "Opened"
+        root.xpath(".//*[@id='pr']", namespaces=ns)[0].text = str(stats["pr"])
+        root.xpath(".//*[@id='text-pr-1']", namespaces=ns)[0].text = "PRs"
+
+        root.xpath(".//*[@id='text-issue-0']", namespaces=ns)[0].text = "Opened"
+        root.xpath(".//*[@id='issue']", namespaces=ns)[0].text = str(stats["issue"])
+        root.xpath(".//*[@id='text-issue-1']", namespaces=ns)[0].text = "Issues"
 
         with open("my-github-stats.svg", "w", encoding="utf-8") as f:
-            f.write(card)
+            f.write(etree.tostring(root, encoding="unicode"))
 
     def request_api(self, endpoint: str, get_all_pages: bool = False) -> list | dict:
         headers = {"Authorization": f"token {self.TOKEN}"}
