@@ -139,17 +139,17 @@ class StatUpdater:
             root.xpath(".//*[@id='text-repo-total']", namespaces=ns)[0].text = "Total"
             root.xpath(".//*[@id='repo-total']", namespaces=ns)[0].text = str(display_total_repo_count)
         elif self.CONFIG["repo"]["show_mode"] == "detail":
-            if not self.CONFIG["repo"]["include_public_repos"] and not self.CONFIG["repo"]["include_private_repos"] and not self.CONFIG["repo"]["include_collaborator_repo"]:
+            if not self.CONFIG["repo"]["show_public_repos"] and not self.CONFIG["repo"]["show_private_repos"] and not self.CONFIG["repo"]["show_collaborator_repo"]:
                 raise Exception("At least one type of repository must be displayed")
-            if self.CONFIG["repo"]["include_public_repos"]:
+            if self.CONFIG["repo"]["show_public_repos"]:
                 display_total_repo_count += stats["repo_pub"]
                 root.xpath(".//*[@id='repo-pub']", namespaces=ns)[0].text = str(stats["repo_pub"])
                 root.xpath(".//*[@id='text-repo-pub']", namespaces=ns)[0].text = "public"
-            if self.CONFIG["repo"]["include_private_repos"]:
+            if self.CONFIG["repo"]["show_private_repos"]:
                 display_total_repo_count += stats["repo_pri"]
                 root.xpath(".//*[@id='repo-pri']", namespaces=ns)[0].text = str(stats["repo_pri"])
                 root.xpath(".//*[@id='text-repo-pri']", namespaces=ns)[0].text = "private"
-            if self.CONFIG["repo"]["include_collaborator_repo"]:
+            if self.CONFIG["repo"]["show_collaborator_repo"]:
                 display_total_repo_count += stats["repo_col"]
                 root.xpath(".//*[@id='repo-col']", namespaces=ns)[0].text = str(stats["repo_col"])
                 root.xpath(".//*[@id='text-repo-col']", namespaces=ns)[0].text = "collabo"
@@ -183,17 +183,17 @@ class StatUpdater:
             root.xpath(".//*[@id='text-pr-total']", namespaces=ns)[0].text = "Submitted"
             root.xpath(".//*[@id='pr-total']", namespaces=ns)[0].text = str(display_total_pr_count)
         elif self.CONFIG["pr"]["show_mode"] == "detail":
-            if not self.CONFIG["pr"]["include_open_prs"] and not self.CONFIG["pr"]["include_merged_prs"] and not self.CONFIG["pr"]["include_closed_prs"]:
+            if not self.CONFIG["pr"]["show_open_prs"] and not self.CONFIG["pr"]["show_merged_prs"] and not self.CONFIG["pr"]["show_closed_prs"]:
                 raise Exception("At least one type of PR must be displayed")
-            if self.CONFIG["pr"]["include_open_prs"]:
+            if self.CONFIG["pr"]["show_open_prs"]:
                 display_total_pr_count += stats["repo_pub"]
                 root.xpath(".//*[@id='pr-open']", namespaces=ns)[0].text = str(stats["pr_open"])
                 root.xpath(".//*[@id='text-pr-open']", namespaces=ns)[0].text = "open"
-            if self.CONFIG["pr"]["include_merged_prs"]:
+            if self.CONFIG["pr"]["show_merged_prs"]:
                 display_total_pr_count += stats["repo_pri"]
                 root.xpath(".//*[@id='pr-merged']", namespaces=ns)[0].text = str(stats["pr_merged"])
                 root.xpath(".//*[@id='text-pr-merged']", namespaces=ns)[0].text = "merged"
-            if self.CONFIG["pr"]["include_closed_prs"]:
+            if self.CONFIG["pr"]["show_closed_prs"]:
                 display_total_pr_count += stats["repo_col"]
                 root.xpath(".//*[@id='pr-closed']", namespaces=ns)[0].text = str(stats["pr_closed"])
                 root.xpath(".//*[@id='text-pr-closed']", namespaces=ns)[0].text = "closed(unmerged)"
