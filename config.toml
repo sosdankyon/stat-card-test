@@ -2,9 +2,10 @@
 date_format = "%Y-%m-%d %H:%M"  # %Y: year, %m: month, %d: day, %H: hour, %M: minute. 시간은 항상 UTC 기준
 
 [repo]
-include_public_repos = true  # 공개 레포지토리의 개수를 카운트에 포함할지
-include_private_repos = true  # 비공개 레포지토리의 개수를 카운트에 포함할지
-include_collaborator_repo = true  # 협업자로 포함된 비공개 레포지토리나 접근 가능한 조직의 레포지토리의 개수를 포함할지
+# TODO include -> show
+include_public_repos = true  # 공개 레포지토리의 개수를 표시할지
+include_private_repos = true  # 비공개 레포지토리의 개수를 표시할지
+include_collaborator_repo = true  # 협업자로 포함된 비공개 레포지토리나 접근 가능한 조직의 레포지토리의 개수를 표시할지
 # 카드에 표시할 형식을 설정
 # - "detail": 1 public, 2 private, 3 collabo repositories
 #    - include_xxx_repos 설정이 false인 항목은 제외되어 표시됨
@@ -16,7 +17,10 @@ include_private_commit = true  # TODO 비공개 레포지토리의 커밋 개수
 show_commit_this_year = true  # 올해 커밋 개수를 같이 표시할지
 
 [pr]
+include_open_prs = true  # 열려 있는 pr의 개수를 표시할지
+include_merged_prs = true  # 병합되어 닫힌 pr의 개수를 표시할지
+include_closed_prs = true  # 병합되지 않고 닫힌 pr의 개수를 표시할지
 # 카드에 표시할 형식을 설정
-# - "each": 1 open, 2 closed(unmerged), 3 merged
+# - "detail": 1 open, 2 closed(unmerged), 3 merged
 # - "total": Total 6 PRs
-show_mode = "each"  # TODO 구현 필요
+show_mode = "total"

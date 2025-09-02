@@ -78,8 +78,11 @@ class StatUpdater:
         logger.info(f"You have {commit_count_this_year} commits this year")
 
         issue_count = self.get_search_count("issues", f"author:{self.USER_NAME} is:issue")
-        pr_count = self.get_search_count("issues", f"author:{self.USER_NAME} is:pr")
-        logger.info(f"You made {issue_count} issues, {pr_count} PRs")
+        pr_open_count = self.get_search_count("issues", f"author:{self.USER_NAME} is:pr is:open")
+        pr_merged_count = self.get_search_count("issues", f"author:{self.USER_NAME} is:pr is:merged")
+        pr_closed_count = self.get_search_count("issues", f"author:{self.USER_NAME} is:pr is:closed -is:merged")
+        logger.info(f"You made {issue_count} issues")
+        logger.info(f"You have {pr_open_count} open PR(s), {pr_merged_count} merged PR(s), {pr_closed_count} closed and unmerged PR(s)")
 
         return {
             "repo_pub": public_repo_count,
@@ -92,7 +95,9 @@ class StatUpdater:
             "commits_this_year": commit_count_this_year,
             "this_year": year,
             "issue": issue_count,
-            "pr": pr_count,
+            "pr_open": pr_open_count,
+            "pr_merged": pr_merged_count,
+            "pr_closed": pr_closed_count,
             "now": now.strftime(self.CONFIG["date"]["date_format"]),
         }
 
@@ -171,11 +176,33 @@ class StatUpdater:
         root.xpath(".//*[@id='fork']", namespaces=ns)[0].text = str(stats["fork"])
         root.xpath(".//*[@id='text-fork-1']", namespaces=ns)[0].text = "times"
 
-        root.xpath(".//*[@id='text-pr-0']", namespaces=ns)[0].text = "Opened"
-        root.xpath(".//*[@id='pr']", namespaces=ns)[0].text = str(stats["pr"])
-        root.xpath(".//*[@id='text-pr-1']", namespaces=ns)[0].text = "PRs"
 
-        root.xpath(".//*[@id='text-issue-0']", namespaces=ns)[0].text = "Opened"
+        display_total_pr_count = 0
+        if self.CONFIG["pr"]["show_mode"] == "total":
+            display_total_pr_count = stats["pr_open"] + stats["pr_merged"] + stats["pr_closed"]
+            root.xpath(".//*[@id='text-pr-total']", namespaces=ns)[0].text = "Submitted"
+            root.xpath(".//*[@id='pr-total']", namespaces=ns)[0].text = str(display_total_pr_count)
+        elif self.CONFIG["pr"]["show_mode"] == "detail":
+            if not self.CONFIG["pr"]["include_open_prs"] and not self.CONFIG["pr"]["include_merged_prs"] and not self.CONFIG["pr"]["include_closed_prs"]:
+                raise Exception("At least one type of PR must be displayed")
+            if self.CONFIG["pr"]["include_open_prs"]:
+                display_total_pr_count += stats["repo_pub"]
+                root.xpath(".//*[@id='pr-open']", namespaces=ns)[0].text = str(stats["pr_open"])
+                root.xpath(".//*[@id='text-pr-open']", namespaces=ns)[0].text = "open"
+            if self.CONFIG["pr"]["include_merged_prs"]:
+                display_total_pr_count += stats["repo_pri"]
+                root.xpath(".//*[@id='pr-merged']", namespaces=ns)[0].text = str(stats["pr_merged"])
+                root.xpath(".//*[@id='text-pr-merged']", namespaces=ns)[0].text = "merged"
+            if self.CONFIG["pr"]["include_closed_prs"]:
+                display_total_pr_count += stats["repo_col"]
+                root.xpath(".//*[@id='pr-closed']", namespaces=ns)[0].text = str(stats["pr_closed"])
+                root.xpath(".//*[@id='text-pr-closed']", namespaces=ns)[0].text = "closed(unmerged)"
+        else:
+            raise Exception("config pr.show_mode is wrong")
+
+        root.xpath(".//*[@id='text-pr']", namespaces=ns)[0].text = "PRs" if display_total_pr_count > 1 else "PR"
+
+        root.xpath(".//*[@id='text-issue-0']", namespaces=ns)[0].text = "Created"
         root.xpath(".//*[@id='issue']", namespaces=ns)[0].text = str(stats["issue"])
         root.xpath(".//*[@id='text-issue-1']", namespaces=ns)[0].text = "Issues"
 
