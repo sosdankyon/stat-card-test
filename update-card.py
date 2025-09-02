@@ -29,7 +29,7 @@ class StatUpdater:
 
         self.TOKEN: Final[Optional[str]] = os.getenv("TOKEN", default=None)
         self.USER_NAME: Final[Optional[str]] = os.getenv("USER_NAME", default=None)
-        self.FONT: Optional[str] = os.getenv("FONT", default=None)
+        self.FONT: Optional[str] = os.getenv("FONT", default=None) or None  # none if action variable not defined
 
         if self.TOKEN is None:
             raise Exception("TOKEN not set")
