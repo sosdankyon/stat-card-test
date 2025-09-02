@@ -82,7 +82,6 @@ class StatUpdater:
         logger.info(f"You made {issue_count} issues, {pr_count} PRs")
 
         return {
-            "repo_total": public_repo_count + private_repo_count + len(collabo_repos),
             "repo_pub": public_repo_count,
             "repo_pri": private_repo_count,
             "repo_col": len(collabo_repos),
@@ -94,7 +93,7 @@ class StatUpdater:
             "this_year": year,
             "issue": issue_count,
             "pr": pr_count,
-            "now": now.strftime("%Y-%m-%d %H:%M"),
+            "now": now.strftime(self.CONFIG["date"]["date_format"]),
         }
 
     def get_font(self) -> str:
@@ -129,19 +128,34 @@ class StatUpdater:
   font-display: block;
 }}"""
 
-        root.xpath(".//*[@id='repo-pub']", namespaces=ns)[0].text = str(stats["repo_pub"])
-        root.xpath(".//*[@id='text-repo-pub']", namespaces=ns)[0].text = "public,"
-        root.xpath(".//*[@id='repo-pri']", namespaces=ns)[0].text = str(stats["repo_pri"])
-        root.xpath(".//*[@id='text-repo-pri']", namespaces=ns)[0].text = "private"
-        if stats["repo_col"] > 1:
-            root.xpath(".//*[@id='text-repo-pri']", namespaces=ns)[0].text += ","
-            root.xpath(".//*[@id='repo-col']", namespaces=ns)[0].text = str(stats["repo_col"])
-            root.xpath(".//*[@id='text-repo-col']", namespaces=ns)[0].text = "collabo"
-            root.xpath(".//*[@id='text-repository']", namespaces=ns)[0].text = "repositories" if stats["repo_total"] > 1 else "repository"
+        display_total_repo_count = 0
+        if self.CONFIG["repo"]["show_mode"] == "total":
+            display_total_repo_count = stats["repo_pub"] + stats["repo_pri"] + stats["repo_col"]
+            root.xpath(".//*[@id='text-repo-total']", namespaces=ns)[0].text = "Total"
+            root.xpath(".//*[@id='repo-total']", namespaces=ns)[0].text = str(display_total_repo_count)
+        elif self.CONFIG["repo"]["show_mode"] == "detail":
+            if not self.CONFIG["repo"]["include_public_repos"] and not self.CONFIG["repo"]["include_private_repos"] and not self.CONFIG["repo"]["include_collaborator_repo"]:
+                raise Exception("At least one type of repository must be displayed")
+            if self.CONFIG["repo"]["include_public_repos"]:
+                display_total_repo_count += stats["repo_pub"]
+                root.xpath(".//*[@id='repo-pub']", namespaces=ns)[0].text = str(stats["repo_pub"])
+                root.xpath(".//*[@id='text-repo-pub']", namespaces=ns)[0].text = "public"
+            if self.CONFIG["repo"]["include_private_repos"]:
+                display_total_repo_count += stats["repo_pri"]
+                root.xpath(".//*[@id='repo-pri']", namespaces=ns)[0].text = str(stats["repo_pri"])
+                root.xpath(".//*[@id='text-repo-pri']", namespaces=ns)[0].text = "private"
+            if self.CONFIG["repo"]["include_collaborator_repo"]:
+                display_total_repo_count += stats["repo_col"]
+                root.xpath(".//*[@id='repo-col']", namespaces=ns)[0].text = str(stats["repo_col"])
+                root.xpath(".//*[@id='text-repo-col']", namespaces=ns)[0].text = "collabo"
+        else:
+            raise Exception("config repo.show_mode is wrong")
+
+        root.xpath(".//*[@id='text-repository']", namespaces=ns)[0].text = "repositories" if display_total_repo_count > 1 else "repository"
 
         root.xpath(".//*[@id='commit']", namespaces=ns)[0].text = str(stats["commits"])
         root.xpath(".//*[@id='text-commit-0']", namespaces=ns)[0].text = " total commits"
-        if 1:  # TODO 추후 콘피그 show_commit_this_year 조건 판별 추가
+        if self.CONFIG["commit"]["show_commit_this_year"]:
             root.xpath(".//*[@id='text-commit-0']", namespaces=ns)[0].text += "("
             root.xpath(".//*[@id='commit-year']", namespaces=ns)[0].text = str(stats["commits_this_year"])
             root.xpath(".//*[@id='text-commit-1']", namespaces=ns)[0].text = " this year)"
