@@ -11,7 +11,7 @@ A repository that automatically generates and updates GitHub stats cards for you
 Create a new repository with the same name as your GitHub username and create a `README.md` file within it.
 This is a special repository, and the content of its README will be displayed on your public GitHub profile page.
 
-In the location where you want to display the stats card, add the following line: `!()[my-github-stats.svg]`
+In the location where you want to display the stats card, add the following line: `![stat](my-github-stats.svg)`
 
 ### Generate a Token
 #### Fine-grained tokens
