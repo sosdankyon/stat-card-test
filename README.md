@@ -31,6 +31,10 @@ In the location where you want to display the stats card, add the following line
 ### Repository Setup
 Fork this repository.
 
+Create a config.toml file with your desired settings by referring to the config.toml.sample file.
+
+Since config.toml is included in .gitignore, you should upload the file directly on the GitHub website.
+
 Add `Repository secrets`:
 * `TOKEN`: (Required) The token you generated above.
 
@@ -41,7 +45,7 @@ Add `Repository variables`:
     * If left blank, the default font will be used.
 
 ### Updating the Card
-Go to the `Actions` tab of your forked repository and manually run the `Update card` workflow to check for any errors.
+Go to the `Actions` tab of your forked repository, first enable the workflow, and then manually run the `Update card` workflow to check for any errors.
 If it runs without errors, a `my-github-stats.svg` file will be generated in your profile repository.
 
 By default, the card will be updated automatically around 00:00 (midnight) every day.
