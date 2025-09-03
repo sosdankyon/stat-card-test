@@ -1,25 +1,25 @@
 [date]
-date_format = "%Y-%m-%d %H:%M"  # %Y: year, %m: month, %d: day, %H: hour, %M: minute. 시간은 항상 UTC 기준
+date_format = "%Y-%m-%d %H:%M"  # %Y: year, %m: month, %d: day, %H: hour, %M: minute. The time is always in UTC.
 
 [repo]
-show_public_repos = true  # 공개 레포지토리의 개수를 표시할지
-show_private_repos = true  # 비공개 레포지토리의 개수를 표시할지
-show_collaborator_repo = true  # 협업자로 포함된 비공개 레포지토리나 접근 가능한 조직의 레포지토리의 개수를 표시할지
-# 카드에 표시할 형식을 설정
-# - "detail": 1 public, 2 private, 3 collabo repositories
-#    - include_xxx_repos 설정이 false인 항목은 제외되어 표시됨
+show_public_repos = true  # Whether to show the count of public repositories.
+show_private_repos = true  # Whether to show the count of private repositories.
+show_collaborator_repo = true  # Whether to show the count of private repositories where you are a collaborator or repositories accessible through organizations you belong to.
+# Set the format for displaying the repositories on the card.
+# - "detail": 1 public 2 private 3 collabo repositories
+#    - Items for which show_xxx_repos is set to false will not be displayed.
 # - "total": Total 6 repositories
 show_mode = "detail"
 
 [commit]
-include_private_commit = true  # TODO 비공개 레포지토리의 커밋 개수를 포함할지
-show_commit_this_year = true  # 올해 커밋 개수를 같이 표시할지
+include_private_commit = true  # Whether to include the commit count for private repositories.
+show_commit_this_year = true  # Whether to show the commit count for this year.
 
 [pr]
-show_open_prs = true  # 열려 있는 pr의 개수를 표시할지
-show_merged_prs = true  # 병합되어 닫힌 pr의 개수를 표시할지
-show_closed_prs = true  # 병합되지 않고 닫힌 pr의 개수를 표시할지
-# 카드에 표시할 형식을 설정
-# - "detail": 1 open, 2 closed(unmerged), 3 merged
+show_open_prs = true  # Whether to show the count of open pull requests.
+show_merged_prs = true  # Whether to show the count of merged and closed pull requests.
+show_closed_prs = true  # Whether to show the count of pull requests that are closed but not merged.
+# Set the format for displaying the pull requests on the card.
+# - "detail": 1 open 2 merged 3 closed(unmerged) PRs
 # - "total": Total 6 PRs
-show_mode = "total"
+show_mode = "detail"

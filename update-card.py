@@ -69,12 +69,15 @@ class StatUpdater:
         total_followers = user_info["followers"]
         logger.info(f"You have {total_followers} followers")
 
-        commit_count = self.get_search_count("commits", f"author:{self.USER_NAME}")
-        logger.info(f"You have {commit_count} commits")
-
         now = datetime.now()
         year = now.year
-        commit_count_this_year = self.get_search_count("commits", f"author:{self.USER_NAME} author-date:{year}-01-01..{year}-12-31")
+        if self.CONFIG["commit"]["include_private_commit"]:
+            commit_count = self.get_search_count("commits", f"author:{self.USER_NAME}")
+            commit_count_this_year = self.get_search_count("commits", f"author:{self.USER_NAME} author-date:{year}-01-01..{year}-12-31")
+        else:
+            commit_count = self.get_search_count("commits", f"author:{self.USER_NAME} is:public")
+            commit_count_this_year = self.get_search_count("commits", f"author:{self.USER_NAME} is:public author-date:{year}-01-01..{year}-12-31")
+        logger.info(f"You have {commit_count} commits")
         logger.info(f"You have {commit_count_this_year} commits this year")
 
         issue_count = self.get_search_count("issues", f"author:{self.USER_NAME} is:issue")
@@ -112,7 +115,7 @@ class StatUpdater:
             logger.info(f"Get font from path {self.FONT}")
             with open(self.FONT, "rb") as f:
                 data = f.read()
-                logger.info(f"font size: {len(data)}")
+                logger.info(f"font size: {len(data)} bytes")
                 return base64.b64encode(data).decode("utf-8")
 
     def make_card(self, stats: dict, b64_font: str):
