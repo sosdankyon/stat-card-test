@@ -41,7 +41,7 @@ Add `Repository variables`:
     * If left blank, the default font will be used.
 
 ### Updating the Card
-Go to the `Actions` tab of your forked repository and manually run the `Update card` workflow to check for any errors.
+Go to the `Actions` tab of your forked repository, first enable the workflow, and then manually run the `Update card` workflow to check for any errors.
 If it runs without errors, a `my-github-stats.svg` file will be generated in your profile repository.
 
 By default, the card will be updated automatically around 00:00 (midnight) every day.
