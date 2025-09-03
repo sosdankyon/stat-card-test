@@ -31,6 +31,10 @@ In the location where you want to display the stats card, add the following line
 ### Repository Setup
 Fork this repository.
 
+Create a config.toml file with your desired settings by referring to the config.toml.sample file.
+
+Since config.toml is included in .gitignore, you should upload the file directly on the GitHub website.
+
 Add `Repository secrets`:
 * `TOKEN`: (Required) The token you generated above.
 
