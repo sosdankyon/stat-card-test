@@ -22,4 +22,4 @@ show_closed_prs = true  # Whether to show the count of pull requests that are cl
 # Set the format for displaying the pull requests on the card.
 # - "detail": 1 open 2 merged 3 closed(unmerged) PRs
 # - "total": Total 6 PRs
-show_mode = "detail"
+show_mode = "total"
