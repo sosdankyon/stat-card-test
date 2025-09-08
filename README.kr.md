@@ -31,8 +31,7 @@
 ### 레포지토리 설정
 이 레포지토리를 포크한다.
 
-`config.toml.sample` 내용을 참고하여 원하는대로 설정을 만든 후 `config.toml`이라는 이름으로 레포지토리에 파일을 업로드한다.
-`.gitignore`에 `config.toml`이 포함되어 있으므로 깃허브에서 바로 파일을 업로드하면 된다.
+`config.toml`을 수정하여 원하는 설정을 한다.
 
 `Repository secrets` 추가
 * `TOKEN`: (필수) 위에서 생성한 토큰
